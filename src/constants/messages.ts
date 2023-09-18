@@ -70,6 +70,15 @@ export const USERS_MESSAGES = {
     GET_VIDEO_STATUS_SUCCESS: 'Get video status success'
 } as const
 
+export const MEDIAS_MESSAGES = {
+    UPLOAD_IMAGE_SUCCESS: 'Upload image successfully',
+    UPLOAD_VIDEO_SUCCESS: 'Upload video successfully',
+    UPLOAD_VIDEO_HLS_SUCCESS: 'Upload video HLS successfully',
+    GET_VIDEO_STATUS_SUCCESS: 'Get video status successfully',
+    IMAGE_NOT_FOUND: 'Image not found',
+    VIDEO_NOT_FOUND: 'Video not found'
+} as const
+
 export const TWEETS_MESSAGES = {
     INVALID_TYPE: 'Invalid type',
     INVALID_AUDIENCE: 'Invalid audience',

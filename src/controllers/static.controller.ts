@@ -5,6 +5,7 @@ import mime from 'mime'
 
 import HTTP_STATUS from '~/constants/httpStatus'
 import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from '~/constants/dir'
+import { MEDIAS_MESSAGES } from '~/constants/messages'
 
 export const serveImageController = (req: Request, res: Response) => {
     const { name } = req.params
@@ -12,7 +13,7 @@ export const serveImageController = (req: Request, res: Response) => {
     return res.sendFile(path.resolve(UPLOAD_IMAGE_DIR, name), (err) => {
         if (err) {
             return res.status((err as any).status).json({
-                message: 'Image not found'
+                message: MEDIAS_MESSAGES.IMAGE_NOT_FOUND
             })
         }
     })
@@ -51,7 +52,7 @@ export const serveM3u8Controller = (req: Request, res: Response) => {
     return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, 'master.m3u8'), (err) => {
         if (err) {
             return res.status((err as any).status).json({
-                message: 'Video not found'
+                message: MEDIAS_MESSAGES.VIDEO_NOT_FOUND
             })
         }
     })
@@ -63,7 +64,7 @@ export const serveSegmentController = (req: Request, res: Response) => {
     return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, v, segment), (err) => {
         if (err) {
             return res.status((err as any).status).json({
-                message: 'Video not found'
+                message: MEDIAS_MESSAGES.VIDEO_NOT_FOUND
             })
         }
     })

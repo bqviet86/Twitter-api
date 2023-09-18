@@ -257,8 +257,6 @@ export const encodeHLSWithMultipleVideoStreams = async (inputPath: string) => {
         args = argsWithOriginalWidth
     }
 
-    console.log('args', args.join(' '))
-
     await runCommandWithProgress('ffmpeg', args as string[])
     console.log('Convert thành công')
 }

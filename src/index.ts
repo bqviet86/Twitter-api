@@ -18,8 +18,10 @@ const app = express()
 initFolder(UPLOAD_IMAGE_TEMP_DIR)
 initFolder(UPLOAD_VIDEO_TEMP_DIR)
 
-// Connect to database
-databaseService.connect()
+// Connect to database and index fields
+databaseService.connect().then(() => {
+    databaseService.indexUser()
+})
 
 // Middlewares
 app.use(express.json())

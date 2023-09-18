@@ -8,11 +8,11 @@ config()
 export const signToken = ({
     payload,
     privateKey,
-    options
+    options = { algorithm: 'HS256' }
 }: {
     payload: string | Buffer | object
     privateKey: string
-    options: SignOptions
+    options?: SignOptions
 }) => {
     return new Promise<string>((resolve, reject) => {
         jwt.sign(payload, privateKey, options, function (error, token) {

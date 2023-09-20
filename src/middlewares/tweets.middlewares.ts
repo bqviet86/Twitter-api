@@ -146,7 +146,128 @@ export const tweetIdValidator = validate(
                             })
                         }
 
-                        const tweet = await databaseService.tweets.findOne({ _id: new ObjectId(value) })
+                        const [tweet] = await databaseService.tweets
+                            .aggregate<Tweet>([
+                                {
+                                    $match: {
+                                        _id: new ObjectId(value)
+                                    }
+                                },
+                                {
+                                    $lookup: {
+                                        from: 'hashtags',
+                                        localField: 'hashtags',
+                                        foreignField: '_id',
+                                        as: 'hashtags'
+                                    }
+                                },
+                                {
+                                    $lookup: {
+                                        from: 'users',
+                                        localField: 'mentions',
+                                        foreignField: '_id',
+                                        as: 'mentions'
+                                    }
+                                },
+                                {
+                                    $lookup: {
+                                        from: 'bookmarks',
+                                        localField: '_id',
+                                        foreignField: 'tweet_id',
+                                        as: 'bookmarks'
+                                    }
+                                },
+                                {
+                                    $lookup: {
+                                        from: 'likes',
+                                        localField: '_id',
+                                        foreignField: 'tweet_id',
+                                        as: 'likes'
+                                    }
+                                },
+                                {
+                                    $lookup: {
+                                        from: 'tweets',
+                                        localField: '_id',
+                                        foreignField: 'parent_id',
+                                        as: 'tweet_children'
+                                    }
+                                },
+                                {
+                                    $addFields: {
+                                        hashtags: {
+                                            $map: {
+                                                input: '$hashtags',
+                                                as: 'hashtag',
+                                                in: {
+                                                    _id: '$$hashtag._id',
+                                                    name: '$$hashtag.name'
+                                                }
+                                            }
+                                        },
+                                        mentions: {
+                                            $map: {
+                                                input: '$mentions',
+                                                as: 'mention',
+                                                in: {
+                                                    _id: '$$mention._id',
+                                                    name: '$$mention.name',
+                                                    email: '$$mention.email',
+                                                    username: '$$mention.username'
+                                                }
+                                            }
+                                        },
+                                        bookmarks: {
+                                            $size: '$bookmarks'
+                                        },
+                                        likes: {
+                                            $size: '$likes'
+                                        },
+                                        retweet_count: {
+                                            $size: {
+                                                $filter: {
+                                                    input: '$tweet_children',
+                                                    as: 'tweet_child',
+                                                    cond: {
+                                                        $eq: ['$$tweet_child.type', 1]
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        comment_count: {
+                                            $size: {
+                                                $filter: {
+                                                    input: '$tweet_children',
+                                                    as: 'tweet_child',
+                                                    cond: {
+                                                        $eq: ['$$tweet_child.type', 2]
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        quotetweet_count: {
+                                            $size: {
+                                                $filter: {
+                                                    input: '$tweet_children',
+                                                    as: 'tweet_child',
+                                                    cond: {
+                                                        $eq: ['$$tweet_child.type', 3]
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        views: {
+                                            $add: ['$guest_views', '$user_views']
+                                        }
+                                    }
+                                },
+                                {
+                                    $project: {
+                                        tweet_children: 0
+                                    }
+                                }
+                            ])
+                            .toArray()
 
                         if (tweet === null) {
                             throw new ErrorWithStatus({
@@ -195,11 +316,6 @@ export const audienceValidator = async (req: Request, res: Response, next: NextF
         const user_id = req.decoded_authorization.user_id
         const isInTwitterCircle = author.twitter_circle.some((user_id_in_circle) => user_id_in_circle.equals(user_id))
         const isAuthor = author._id.equals(user_id)
-
-        console.log('user_id', user_id)
-        console.log('author_id', author._id)
-        console.log('isInTwitterCircle', isInTwitterCircle)
-        console.log('isAuthor', isAuthor)
 
         if (!isInTwitterCircle && !isAuthor) {
             throw new ErrorWithStatus({

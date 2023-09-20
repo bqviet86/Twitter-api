@@ -261,8 +261,6 @@ class UserService {
     async resendVerifyEmail(user_id: string) {
         const email_verify_token = await this.signEmailVerifyToken({ user_id, verify: UserVerifyStatus.Unverified })
 
-        console.log(`Resend email_verify_token: ${email_verify_token}`)
-
         await databaseService.users.updateOne(
             { _id: new ObjectId(user_id) },
             {
@@ -274,6 +272,8 @@ class UserService {
                 }
             }
         )
+
+        console.log(`Resend email_verify_token: ${email_verify_token}`)
 
         return { message: USERS_MESSAGES.RESEND_VERIFY_EMAIL_SUCCESS }
     }

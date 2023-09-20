@@ -60,15 +60,7 @@ export const oauthGoogleController = async (req: Request, res: Response) => {
 }
 
 export const verifyEmailController = async (req: Request<ParamsDictionary, any, VerifyEmailReqBody>, res: Response) => {
-    const { user_id } = req.decoded_email_verify_token as TokenPayload
-
-    const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
-
-    if (!user) {
-        return res.status(HTTP_STATUS.NOT_FOUND).json({
-            message: USERS_MESSAGES.USER_NOT_FOUND
-        })
-    }
+    const user = req.user as User
 
     if (user.verify === UserVerifyStatus.Verified) {
         return res.json({
@@ -76,7 +68,7 @@ export const verifyEmailController = async (req: Request<ParamsDictionary, any, 
         })
     }
 
-    const result = await usersService.verifyEmail(user_id)
+    const result = await usersService.verifyEmail((user._id as ObjectId).toString())
 
     return res.json({
         message: USERS_MESSAGES.EMAIL_VERIFY_SUCCESS,

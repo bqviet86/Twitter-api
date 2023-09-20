@@ -17,6 +17,7 @@ import { hashPassword } from '~/utils/crypto'
 import { verifyToken } from '~/utils/jwt'
 import { validate } from '~/utils/validation'
 
+// Lỗi mặc định 422, muón lỗi khác thì dùng ErrorWithStatus
 const nameSchema: ParamSchema = {
     notEmpty: {
         errorMessage: USERS_MESSAGES.NAME_IS_REQUIRED
@@ -119,7 +120,7 @@ const forgotPasswordTokenSchema: ParamSchema = {
                 if (user === null) {
                     throw new ErrorWithStatus({
                         message: USERS_MESSAGES.USER_NOT_FOUND,
-                        status: HTTP_STATUS.UNAUTHORIZED
+                        status: HTTP_STATUS.NOT_FOUND
                     })
                 }
 
@@ -198,7 +199,6 @@ const followedUserIdSchema: ParamSchema = {
     }
 }
 
-// Lỗi mặc định 422, muón lỗi khác thì dùng ErrorWithStatus
 export const registerValidator = validate(
     checkSchema(
         {
@@ -251,7 +251,7 @@ export const loginValidator = validate(
                         if (user === null) {
                             throw new ErrorWithStatus({
                                 message: USERS_MESSAGES.USER_NOT_FOUND,
-                                status: HTTP_STATUS.UNAUTHORIZED
+                                status: HTTP_STATUS.NOT_FOUND
                             })
                         }
 
@@ -259,10 +259,7 @@ export const loginValidator = validate(
                             hashPassword((req as Request<ParamsDictionary, any, LoginReqBody>).body.password) !==
                             user.password
                         ) {
-                            throw new ErrorWithStatus({
-                                message: USERS_MESSAGES.PASSWORD_INVALID,
-                                status: HTTP_STATUS.UNAUTHORIZED
-                            })
+                            throw new Error(USERS_MESSAGES.PASSWORD_INVALID)
                         }
 
                         ;(req as Request).user = user
@@ -386,13 +383,36 @@ export const emailVerifyTokenValidator = validate(
                                 token: value,
                                 secretOrPublicKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
                             })
+                            const { user_id } = decoded_email_verify_token
+                            const user = await databaseService.users.findOne({
+                                _id: new ObjectId(user_id)
+                            })
 
+                            if (user === null) {
+                                throw new ErrorWithStatus({
+                                    message: USERS_MESSAGES.USER_NOT_FOUND,
+                                    status: HTTP_STATUS.NOT_FOUND
+                                })
+                            }
+
+                            if (user.email_verify_token !== value) {
+                                throw new ErrorWithStatus({
+                                    message: USERS_MESSAGES.INVALID_EMAIL_VERIFY_TOKEN,
+                                    status: HTTP_STATUS.UNAUTHORIZED
+                                })
+                            }
+
+                            ;(req as Request).user = user
                             ;(req as Request).decoded_email_verify_token = decoded_email_verify_token
                         } catch (error) {
-                            throw new ErrorWithStatus({
-                                message: capitalize((error as JsonWebTokenError).message),
-                                status: HTTP_STATUS.UNAUTHORIZED
-                            })
+                            if (error instanceof JsonWebTokenError) {
+                                throw new ErrorWithStatus({
+                                    message: capitalize(error.message),
+                                    status: HTTP_STATUS.UNAUTHORIZED
+                                })
+                            }
+
+                            throw error
                         }
 
                         return true
@@ -422,7 +442,10 @@ export const forgotPasswordValidator = validate(
                         })
 
                         if (user === null) {
-                            throw new Error(USERS_MESSAGES.USER_NOT_FOUND)
+                            throw new ErrorWithStatus({
+                                message: USERS_MESSAGES.USER_NOT_FOUND,
+                                status: HTTP_STATUS.NOT_FOUND
+                            })
                         }
 
                         ;(req as Request).user = user
@@ -587,7 +610,7 @@ export const changePasswordValidator = validate(
                         if (user === null) {
                             throw new ErrorWithStatus({
                                 message: USERS_MESSAGES.USER_NOT_FOUND,
-                                status: HTTP_STATUS.UNAUTHORIZED
+                                status: HTTP_STATUS.NOT_FOUND
                             })
                         }
 
@@ -608,3 +631,13 @@ export const changePasswordValidator = validate(
         ['body']
     )
 )
+
+export const isUserLoggedInValidator = (middleware: (req: Request, res: Response, next: NextFunction) => void) => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        if (req.headers.authorization) {
+            return middleware(req, res, next)
+        }
+
+        next()
+    }
+}

@@ -81,7 +81,7 @@ usersRouter.get('/oauth/google', wrapRequestHandler(oauthGoogleController))
 usersRouter.post('/verify-email', emailVerifyTokenValidator, wrapRequestHandler(verifyEmailController))
 
 /**
- * Description: Verify email when user client click on the link in email
+ * Description: User want receive email verify again
  * Path: /resend-verify-email
  * Method: POST
  * Header: { Authorization: Bearer <access_token> }
@@ -97,7 +97,7 @@ usersRouter.post('/resend-verify-email', accessTokenValidator, wrapRequestHandle
 usersRouter.post('/forgot-password', forgotPasswordValidator, wrapRequestHandler(forgotPasswordController))
 
 /**
- * Description: Verify forgot password token
+ * Description: Verify forgot password token when user click on the link in email
  * Path: /verify-forgot-password
  * Method: POST
  * Body: { forgot_password_token: string }
@@ -137,7 +137,7 @@ usersRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController)
  * Path: /me
  * Method: PATCH
  * Header: { Authorization: Bearer <access_token> }
- * Body: UserSchema
+ * Body: UpdateMeReqBody
  */
 usersRouter.patch(
     '/me',

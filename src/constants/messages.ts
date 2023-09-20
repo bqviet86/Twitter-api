@@ -28,6 +28,7 @@ export const USERS_MESSAGES = {
     USED_REFRESH_TOKEN_OR_NOT_EXIST: 'Used refresh token or not exist',
     LOGOUT_SUCCESS: 'Logout success',
     EMAIL_VERIFY_TOKEN_IS_REQUIRED: 'Email verify token is required',
+    INVALID_EMAIL_VERIFY_TOKEN: 'Invalid email verify token',
     USER_NOT_FOUND: 'User not found',
     PASSWORD_INVALID: 'Invalid password',
     EMAIL_ALREADY_VERIFIED_BEFORE: 'Email already verified before',
@@ -80,6 +81,8 @@ export const MEDIAS_MESSAGES = {
 } as const
 
 export const TWEETS_MESSAGES = {
+    CREATE_TWEET_SUCCESSFULLY: 'Create tweet successfully',
+    GET_TWEET_SUCCESSFULLY: 'Get tweet successfully',
     INVALID_TYPE: 'Invalid type',
     INVALID_AUDIENCE: 'Invalid audience',
     PARENT_ID_MUST_BE_A_VALID_TWEET_ID: 'Parent id must be a valid tweet id',
@@ -89,6 +92,7 @@ export const TWEETS_MESSAGES = {
     HASHTAGS_MUST_BE_AN_ARRAY_OF_STRING: 'Hashtags must be an array of string',
     MENTIONS_MUST_BE_AN_ARRAY_OF_USER_ID: 'Mentions must be an array of user id',
     MEDIAS_MUST_BE_AN_ARRAY_OF_MEDIA_OBJECT: 'Medias must be an array of media object',
+    TWEET_ID_IS_REQUIRED: 'Tweet id is required',
     INVALID_TWEET_ID: 'Invalid tweet id',
     TWEET_NOT_FOUND: 'Tweet not found',
     TWEET_IS_NOT_PUBLIC: 'Tweet is not public'

@@ -229,7 +229,7 @@ export const tweetIdValidator = validate(
                                                     input: '$tweet_children',
                                                     as: 'tweet_child',
                                                     cond: {
-                                                        $eq: ['$$tweet_child.type', 1]
+                                                        $eq: ['$$tweet_child.type', TweetType.Retweet]
                                                     }
                                                 }
                                             }
@@ -240,7 +240,7 @@ export const tweetIdValidator = validate(
                                                     input: '$tweet_children',
                                                     as: 'tweet_child',
                                                     cond: {
-                                                        $eq: ['$$tweet_child.type', 2]
+                                                        $eq: ['$$tweet_child.type', TweetType.Comment]
                                                     }
                                                 }
                                             }
@@ -251,13 +251,10 @@ export const tweetIdValidator = validate(
                                                     input: '$tweet_children',
                                                     as: 'tweet_child',
                                                     cond: {
-                                                        $eq: ['$$tweet_child.type', 3]
+                                                        $eq: ['$$tweet_child.type', TweetType.QuoteTweet]
                                                     }
                                                 }
                                             }
-                                        },
-                                        views: {
-                                            $add: ['$guest_views', '$user_views']
                                         }
                                     }
                                 },

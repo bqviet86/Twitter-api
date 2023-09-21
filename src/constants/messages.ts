@@ -83,6 +83,9 @@ export const MEDIAS_MESSAGES = {
 export const TWEETS_MESSAGES = {
     CREATE_TWEET_SUCCESSFULLY: 'Create tweet successfully',
     GET_TWEET_SUCCESSFULLY: 'Get tweet successfully',
+    GET_TWEET_RETWEETS_SUCCESSFULLY: 'Get tweet retweets successfully',
+    GET_TWEET_COMMENTS_SUCCESSFULLY: 'Get tweet comments successfully',
+    GET_TWEET_QUOTETWEETS_SUCCESSFULLY: 'Get tweet quotetweets successfully',
     INVALID_TYPE: 'Invalid type',
     INVALID_AUDIENCE: 'Invalid audience',
     PARENT_ID_MUST_BE_A_VALID_TWEET_ID: 'Parent id must be a valid tweet id',

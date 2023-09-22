@@ -5,6 +5,7 @@ import { TweetType } from '~/constants/enums'
 import { TWEETS_MESSAGES } from '~/constants/messages'
 import {
     CreateTweetReqBody,
+    GetNewFeedsReqQuery,
     GetTweetChildrenReqParams,
     GetTweetChildrenReqQuery,
     GetTweetReqParams
@@ -52,13 +53,13 @@ export const getTweetChildrenController = async (
 
     switch (Number(tweet_type)) {
         case TweetType.Retweet:
-            message = TWEETS_MESSAGES.GET_TWEET_RETWEETS_SUCCESSFULLY
+            message = TWEETS_MESSAGES.GET_RETWEETS_SUCCESSFULLY
             break
         case TweetType.Comment:
-            message = TWEETS_MESSAGES.GET_TWEET_COMMENTS_SUCCESSFULLY
+            message = TWEETS_MESSAGES.GET_COMMENTS_SUCCESSFULLY
             break
         case TweetType.QuoteTweet:
-            message = TWEETS_MESSAGES.GET_TWEET_QUOTETWEETS_SUCCESSFULLY
+            message = TWEETS_MESSAGES.GET_QUOTETWEETS_SUCCESSFULLY
             break
         default:
             message = TWEETS_MESSAGES.INVALID_TYPE
@@ -71,6 +72,26 @@ export const getTweetChildrenController = async (
             limit,
             page,
             tweet_type,
+            total_pages: Math.ceil(result.total_tweets / limit)
+        }
+    })
+}
+
+export const getNewFeedsController = async (
+    req: Request<ParamsDictionary, any, any, GetNewFeedsReqQuery>,
+    res: Response
+) => {
+    const { user_id } = req.decoded_authorization as TokenPayload
+    const limit = Number(req.query.limit)
+    const page = Number(req.query.page)
+    const result = await tweetService.getNewFeeds({ user_id, limit, page })
+
+    return res.json({
+        message: TWEETS_MESSAGES.GET_NEW_FEEDS_SUCCESSFULLY,
+        result: {
+            tweets: result.tweets,
+            limit,
+            page,
             total_pages: Math.ceil(result.total_tweets / limit)
         }
     })

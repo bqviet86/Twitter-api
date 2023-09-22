@@ -280,11 +280,11 @@ export const tweetIdValidator = validate(
                 }
             }
         },
-        ['params', 'body']
+        ['params']
     )
 )
 
-export const getTweetChildrenValidator = validate(
+export const paginationValidator = validate(
     checkSchema(
         {
             limit: {
@@ -303,7 +303,15 @@ export const getTweetChildrenValidator = validate(
                     },
                     errorMessage: 'Page must be an integer greater than 0'
                 }
-            },
+            }
+        },
+        ['query']
+    )
+)
+
+export const getTweetChildrenValidator = validate(
+    checkSchema(
+        {
             tweet_type: {
                 isIn: {
                     options: [tweetTypeValues],

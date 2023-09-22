@@ -26,3 +26,8 @@ export interface GetTweetChildrenReqQuery extends Query {
     page: string
     tweet_type: string
 }
+
+export interface GetNewFeedsReqQuery extends Query {
+    limit: string
+    page: string
+}

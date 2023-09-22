@@ -284,6 +284,37 @@ export const tweetIdValidator = validate(
     )
 )
 
+export const getTweetChildrenValidator = validate(
+    checkSchema(
+        {
+            limit: {
+                isInt: {
+                    options: {
+                        min: 1,
+                        max: 100
+                    },
+                    errorMessage: 'Limit must be an integer between 1 and 100'
+                }
+            },
+            page: {
+                isInt: {
+                    options: {
+                        min: 1
+                    },
+                    errorMessage: 'Page must be an integer greater than 0'
+                }
+            },
+            tweet_type: {
+                isIn: {
+                    options: [tweetTypeValues],
+                    errorMessage: TWEETS_MESSAGES.INVALID_TYPE
+                }
+            }
+        },
+        ['query']
+    )
+)
+
 export const audienceValidator = async (req: Request, res: Response, next: NextFunction) => {
     const tweet = req.tweet as Tweet
 

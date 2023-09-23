@@ -7,8 +7,8 @@ import { TweetAudience, TweetType, UserVerifyStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { TWEETS_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { CreateTweetReqBody } from '~/models/requests/Tweet.requests'
-import Tweet from '~/models/schemas/Tweet.schema'
 import { ErrorWithStatus } from '~/models/Errors'
+import { TweetDetail } from '~/models/Others'
 import databaseService from '~/services/database.services'
 import { numberEnumToArray } from '~/utils/commons'
 import { validate } from '~/utils/validation'
@@ -147,10 +147,25 @@ export const tweetIdValidator = validate(
                         }
 
                         const [tweet] = await databaseService.tweets
-                            .aggregate<Tweet>([
+                            .aggregate<TweetDetail>([
                                 {
                                     $match: {
                                         _id: new ObjectId(value)
+                                    }
+                                },
+                                {
+                                    $lookup: {
+                                        from: 'users',
+                                        localField: 'user_id',
+                                        foreignField: '_id',
+                                        as: 'user'
+                                    }
+                                },
+                                {
+                                    $addFields: {
+                                        user: {
+                                            $arrayElemAt: ['$user', 0]
+                                        }
                                     }
                                 },
                                 {
@@ -195,16 +210,6 @@ export const tweetIdValidator = validate(
                                 },
                                 {
                                     $addFields: {
-                                        hashtags: {
-                                            $map: {
-                                                input: '$hashtags',
-                                                as: 'hashtag',
-                                                in: {
-                                                    _id: '$$hashtag._id',
-                                                    name: '$$hashtag.name'
-                                                }
-                                            }
-                                        },
                                         mentions: {
                                             $map: {
                                                 input: '$mentions',
@@ -260,13 +265,20 @@ export const tweetIdValidator = validate(
                                 },
                                 {
                                     $project: {
-                                        tweet_children: 0
+                                        tweet_children: 0,
+                                        user: {
+                                            date_of_birth: 0,
+                                            password: 0,
+                                            email_verify_token: 0,
+                                            forgot_password_token: 0,
+                                            twitter_circle: 0
+                                        }
                                     }
                                 }
                             ])
                             .toArray()
 
-                        if (tweet === null) {
+                        if (tweet === undefined) {
                             throw new ErrorWithStatus({
                                 status: HTTP_STATUS.NOT_FOUND,
                                 message: TWEETS_MESSAGES.TWEET_NOT_FOUND
@@ -324,7 +336,7 @@ export const getTweetChildrenValidator = validate(
 )
 
 export const audienceValidator = async (req: Request, res: Response, next: NextFunction) => {
-    const tweet = req.tweet as Tweet
+    const tweet = req.tweet as TweetDetail
 
     // Validate người xem trong trường hợp tweet có twitter_circle còn everyone thì không cần
     if (tweet.audience === TweetAudience.TwitterCircle) {

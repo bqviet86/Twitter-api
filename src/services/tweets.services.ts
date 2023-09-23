@@ -4,6 +4,7 @@ import { TweetAudience, TweetType } from '~/constants/enums'
 import { CreateTweetReqBody } from '~/models/requests/Tweet.requests'
 import Tweet from '~/models/schemas/Tweet.schema'
 import Hashtag from '~/models/schemas/Hashtag.schema'
+import { TweetDetail } from '~/models/Others'
 import databaseService from './database.services'
 
 class TweetService {
@@ -71,7 +72,7 @@ class TweetService {
         }>
     }
 
-    async increaseViewMultipleTweets(tweets: Tweet[], user_id?: string) {
+    async increaseViewMultipleTweets(tweets: TweetDetail[], user_id?: string) {
         const increaseViewResults: WithId<{
             user_views: number
             guest_views: number
@@ -89,7 +90,7 @@ class TweetService {
                 ({
                     ...tweet,
                     ...increaseViewResults[index]
-                }) as Tweet
+                }) as TweetDetail
         )
     }
 
@@ -108,7 +109,7 @@ class TweetService {
     }) {
         const [tweets, total_tweets] = await Promise.all([
             databaseService.tweets
-                .aggregate<Tweet>([
+                .aggregate<TweetDetail>([
                     {
                         $match: {
                             parent_id: new ObjectId(tweet_id),
@@ -163,16 +164,6 @@ class TweetService {
                     },
                     {
                         $addFields: {
-                            hashtags: {
-                                $map: {
-                                    input: '$hashtags',
-                                    as: 'hashtag',
-                                    in: {
-                                        _id: '$$hashtag._id',
-                                        name: '$$hashtag.name'
-                                    }
-                                }
-                            },
                             mentions: {
                                 $map: {
                                     input: '$mentions',
@@ -264,7 +255,7 @@ class TweetService {
 
         const [tweets, total] = await Promise.all([
             databaseService.tweets
-                .aggregate<Tweet>([
+                .aggregate<TweetDetail>([
                     {
                         $match: {
                             user_id: {
@@ -356,16 +347,6 @@ class TweetService {
                     },
                     {
                         $addFields: {
-                            hashtags: {
-                                $map: {
-                                    input: '$hashtags',
-                                    as: 'hashtag',
-                                    in: {
-                                        _id: '$$hashtag._id',
-                                        name: '$$hashtag.name'
-                                    }
-                                }
-                            },
                             mentions: {
                                 $map: {
                                     input: '$mentions',

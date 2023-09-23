@@ -63,3 +63,25 @@ export default class User {
         this.cover_photo = user.cover_photo || ''
     }
 }
+
+export interface UserLessData {
+    _id: ObjectId
+    name: string
+    email: string
+    username: string
+}
+
+export interface UserWithoutSensitiveData {
+    _id: ObjectId
+    name: string
+    email: string
+    created_at: Date
+    updated_at: Date
+    verify: UserVerifyStatus
+    bio: string
+    location: string
+    website: string
+    username: string
+    avatar: string
+    cover_photo: string
+}

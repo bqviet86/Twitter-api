@@ -9,6 +9,7 @@ import mediasRouter from '~/routes/medias.routes'
 import tweetsRouter from '~/routes/tweets.routes'
 import bookmarksRouter from '~/routes/bookmarks.routes'
 import likesRouter from '~/routes/likes.routes'
+import searchRouter from './routes/search.routes'
 import staticRouter from '~/routes/static.routes'
 import databaseService from '~/services/database.services'
 import { initFolder } from '~/utils/file'
@@ -40,6 +41,7 @@ app.use('/medias', mediasRouter)
 app.use('/tweets', tweetsRouter)
 app.use('/bookmarks', bookmarksRouter)
 app.use('/likes', likesRouter)
+app.use('/search', searchRouter)
 app.use('/static', staticRouter)
 
 // Error handler

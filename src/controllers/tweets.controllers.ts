@@ -11,7 +11,7 @@ import {
     GetTweetReqParams
 } from '~/models/requests/Tweet.requests'
 import { TokenPayload } from '~/models/requests/User.requests'
-import Tweet from '~/models/schemas/Tweet.schema'
+import { TweetDetail } from '~/models/Others'
 import tweetService from '~/services/tweets.services'
 
 export const createTweetController = async (req: Request<ParamsDictionary, any, CreateTweetReqBody>, res: Response) => {
@@ -29,9 +29,9 @@ export const getTweetController = async (req: Request<GetTweetReqParams>, res: R
     const { user_id } = req.decoded_authorization as TokenPayload
     const result = await tweetService.increaseView(tweet_id, user_id)
     const tweet = {
-        ...(req.tweet as Tweet),
+        ...(req.tweet as TweetDetail),
         ...result
-    } as Tweet
+    } as TweetDetail
 
     return res.json({
         message: TWEETS_MESSAGES.GET_TWEET_SUCCESSFULLY,

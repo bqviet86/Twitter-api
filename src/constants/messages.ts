@@ -117,5 +117,6 @@ export const LIKE_MESSAGES = {
 export const SEARCH_MESSAGES = {
     CONTENT_MUST_BE_STRING: 'Content must be a string',
     SEARCH_SUCCESSFULLY: 'Search successfully',
-    INVALID_MEDIA_TYPE: `Media type must be one of ${Object.values(MediaTypesQuery).join(', ')}.`
+    INVALID_MEDIA_TYPE: `Media type must be one of ${Object.values(MediaTypesQuery).join(', ')}.`,
+    INVALID_PEOPLE_FOLLOW: `People follow must be 0 or 1.`
 } as const

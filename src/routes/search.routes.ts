@@ -13,7 +13,7 @@ const searchRouter = Router()
  * Path: /
  * Method: GET
  * Header: { Authorization: Bearer <access_token> }
- * Query: { content: string, media_type: string, people_follow: string, limit: number, page: number }
+ * Query: { content: string, media_type: MediaTypesQuery, people_follow: boolean, limit: number, page: number }
  */
 searchRouter.get(
     '/',

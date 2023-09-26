@@ -1,6 +1,6 @@
 import { checkSchema } from 'express-validator'
 
-import { MediaTypesQuery } from '~/constants/enums'
+import { MediaTypesQuery, PeopleFollow } from '~/constants/enums'
 import { SEARCH_MESSAGES } from '~/constants/messages'
 import { validate } from '~/utils/validation'
 
@@ -18,14 +18,14 @@ export const searchValidator = validate(
                     options: [Object.values(MediaTypesQuery)]
                 },
                 errorMessage: SEARCH_MESSAGES.INVALID_MEDIA_TYPE
+            },
+            people_follow: {
+                optional: true,
+                isIn: {
+                    options: [Object.values(PeopleFollow)],
+                    errorMessage: SEARCH_MESSAGES.INVALID_PEOPLE_FOLLOW
+                }
             }
-            // people_follow: {
-            //     optional: true,
-            //     isIn: {
-            //         options: [Object.values(PeopleFollow)],
-            //         errorMessage: 'People follow must be 0 or 1'
-            //     }
-            // }
         },
         ['query']
     )

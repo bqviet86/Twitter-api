@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
 
-import { MediaTypes, MediaTypesQuery, TweetAudience, TweetType } from '~/constants/enums'
+import { MediaTypes, MediaTypesQuery, PeopleFollow, TweetAudience, TweetType } from '~/constants/enums'
 import { TweetDetail } from '~/models/Others'
 import databaseService from './database.services'
 import tweetService from './tweets.services'
@@ -9,12 +9,14 @@ class SearchService {
     async search({
         content,
         media_type,
+        people_follow,
         limit,
         page,
         user_id
     }: {
         content: string
         media_type?: MediaTypesQuery
+        people_follow?: PeopleFollow
         limit: number
         page: number
         user_id: string

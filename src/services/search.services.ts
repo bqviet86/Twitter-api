@@ -9,7 +9,7 @@ class SearchService {
     async search({
         content,
         media_type,
-        people_follow,
+        people_follow = PeopleFollow.Anyone,
         limit,
         page,
         user_id
@@ -26,6 +26,7 @@ class SearchService {
                 $search: string
             }
             'medias.type'?: MediaTypes | { $in: MediaTypes[] }
+            user_id?: { $in: ObjectId[] }
         } = {
             $text: {
                 $search: content
@@ -41,6 +42,26 @@ class SearchService {
                 $match['medias.type'] = {
                     $in: [MediaTypes.Video, MediaTypes.HLS]
                 }
+            }
+        }
+
+        if (people_follow === PeopleFollow.Following) {
+            const followed_user_ids = (
+                await databaseService.followers
+                    .find(
+                        { user_id: new ObjectId(user_id) },
+                        {
+                            projection: {
+                                followed_user_id: 1
+                            }
+                        }
+                    )
+                    .toArray()
+            ).map((follower) => follower.followed_user_id)
+
+            followed_user_ids.push(new ObjectId(user_id))
+            $match['user_id'] = {
+                $in: followed_user_ids
             }
         }
 

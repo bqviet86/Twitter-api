@@ -95,6 +95,13 @@ const followMultipleUsers = async (user_id: ObjectId, followed_user_ids: ObjectI
 
     const result = await Promise.all(
         followed_user_ids.map(async (followed_user_id, index) => {
+            const randomPercentage = Math.random() * 101
+
+            if (randomPercentage > 50) {
+                console.log('Not followed')
+                return
+            }
+
             const oke = await databaseService.followers.insertOne(
                 new Follower({
                     user_id,

@@ -107,7 +107,7 @@ class TweetService {
         tweet_type: TweetType
         user_id?: string
     }) {
-        const [{ tweets, total_tweets }] = await databaseService.tweets
+        const result = await databaseService.tweets
             .aggregate<{
                 tweets: TweetDetail[]
                 total_tweets: number
@@ -289,11 +289,20 @@ class TweetService {
                 }
             ])
             .toArray()
-        const new_tweets = await this.increaseViewMultipleTweets(tweets, user_id)
+
+        if (result.length !== 0) {
+            const { tweets, total_tweets } = result[0]
+            const new_tweets = await tweetService.increaseViewMultipleTweets(tweets, user_id)
+
+            return {
+                tweets: new_tweets,
+                total_tweets
+            }
+        }
 
         return {
-            tweets: new_tweets,
-            total_tweets
+            tweets: [],
+            total_tweets: 0
         }
     }
 
@@ -313,7 +322,7 @@ class TweetService {
 
         followed_user_ids.push(new ObjectId(user_id))
 
-        const [{ tweets, total_tweets }] = await databaseService.tweets
+        const result = await databaseService.tweets
             .aggregate<{
                 tweets: TweetDetail[]
                 total_tweets: number
@@ -496,11 +505,20 @@ class TweetService {
                 }
             ])
             .toArray()
-        const new_tweets = await this.increaseViewMultipleTweets(tweets, user_id)
+
+        if (result.length !== 0) {
+            const { tweets, total_tweets } = result[0]
+            const new_tweets = await tweetService.increaseViewMultipleTweets(tweets, user_id)
+
+            return {
+                tweets: new_tweets,
+                total_tweets
+            }
+        }
 
         return {
-            tweets: new_tweets,
-            total_tweets
+            tweets: [],
+            total_tweets: 0
         }
     }
 }

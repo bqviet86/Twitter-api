@@ -1,3 +1,5 @@
+import { MediaTypesQuery } from './enums'
+
 export const USERS_MESSAGES = {
     VALIDATION_ERROR: 'Validation error',
     NAME_IS_REQUIRED: 'Name is required',
@@ -114,5 +116,6 @@ export const LIKE_MESSAGES = {
 
 export const SEARCH_MESSAGES = {
     CONTENT_MUST_BE_STRING: 'Content must be a string',
-    SEARCH_SUCCESSFULLY: 'Search successfully'
+    SEARCH_SUCCESSFULLY: 'Search successfully',
+    INVALID_MEDIA_TYPE: `Media type must be one of ${Object.values(MediaTypesQuery).join(', ')}.`
 } as const

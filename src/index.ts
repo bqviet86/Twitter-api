@@ -29,6 +29,7 @@ databaseService.connect().then(() => {
     databaseService.indexRefreshToken()
     databaseService.indexFollower()
     databaseService.indexVideoStatus()
+    databaseService.indexTweets()
 })
 
 // Middlewares

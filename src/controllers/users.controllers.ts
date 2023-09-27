@@ -54,7 +54,7 @@ export const logoutController = async (req: Request<ParamsDictionary, any, Logou
 export const oauthGoogleController = async (req: Request, res: Response) => {
     const { code } = req.query
     const result = await usersService.oauthGoogle(code as string)
-    const urlRedirect = `${process.env.CLIENT_URL}?access_token=${result.access_token}&refresh_token=${result.refresh_token}&new_user=${result.new_user}`
+    const urlRedirect = `${process.env.CLIENT_URL_OAUTH}?access_token=${result.access_token}&refresh_token=${result.refresh_token}&new_user=${result.new_user}`
 
     return res.redirect(urlRedirect)
 }
@@ -92,7 +92,7 @@ export const resendVerifyEmailController = async (req: Request, res: Response) =
         })
     }
 
-    const result = await usersService.resendVerifyEmail(user_id)
+    const result = await usersService.resendVerifyEmail(user_id, user.email)
 
     return res.json(result)
 }
@@ -101,8 +101,8 @@ export const forgotPasswordController = async (
     req: Request<ParamsDictionary, any, ForgotPasswordReqBody>,
     res: Response
 ) => {
-    const { _id, verify } = req.user as User
-    const result = await usersService.forgotPassword({ user_id: (_id as ObjectId).toString(), verify })
+    const { _id, email, verify } = req.user as User
+    const result = await usersService.forgotPassword({ user_id: (_id as ObjectId).toString(), email, verify })
 
     return res.json(result)
 }

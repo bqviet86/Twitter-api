@@ -395,13 +395,6 @@ export const emailVerifyTokenValidator = validate(
                                 })
                             }
 
-                            if (user.email_verify_token !== value) {
-                                throw new ErrorWithStatus({
-                                    message: USERS_MESSAGES.INVALID_EMAIL_VERIFY_TOKEN,
-                                    status: HTTP_STATUS.UNAUTHORIZED
-                                })
-                            }
-
                             ;(req as Request).user = user
                             ;(req as Request).decoded_email_verify_token = decoded_email_verify_token
                         } catch (error) {

@@ -79,7 +79,7 @@ export const sendVerifyRegisterEmail = (
         template
             .replace('{{title}}', 'Verify your email')
             .replace('{{content}}', 'Click the button below to verify your email.')
-            .replace('{{link}}', `${process.env.CLIENT_URL}/verify-email?token=${email_verify_token}`)
+            .replace('{{link}}', `${process.env.CLIENT_URL}/email-verifications?token=${email_verify_token}`)
             .replace('{{titleLink}}', 'Verify')
     )
 }

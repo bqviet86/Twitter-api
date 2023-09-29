@@ -13,7 +13,6 @@ import searchRouter from './routes/search.routes'
 import staticRouter from '~/routes/static.routes'
 import databaseService from '~/services/database.services'
 import { initFolder } from '~/utils/file'
-// import '~/utils/fake'
 
 config()
 

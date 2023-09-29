@@ -10,7 +10,7 @@ config()
 const sesClient = new SESClient({
     region: process.env.AWS_REGION as string,
     credentials: {
-        secretAccessKey: process.env.AWS_ACCESS_KEY_SECRET as string,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
         accessKeyId: process.env.AWS_ACCESS_KEY_ID as string
     }
 })
@@ -59,7 +59,7 @@ const createSendEmailCommand = ({
 
 export const sendVerifyEmail = (toAddress: string, subject: string, body: string) => {
     const sendEmailCommand = createSendEmailCommand({
-        fromAddress: process.env.SES_FROM_ADDRESS as string,
+        fromAddress: process.env.AWS_SES_FROM_ADDRESS as string,
         toAddresses: toAddress,
         body,
         subject
